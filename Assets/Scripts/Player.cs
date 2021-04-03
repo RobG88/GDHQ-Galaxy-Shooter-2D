@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public static Player instance;
+
+    [SerializeField] int _lives = 3;
+    bool isGameOver = false;
     [SerializeField] float _speed = 8f;
     [SerializeField] float _fireRate = 0.15f;  // delay (in Seconds) how quickly the laser will fire
     float _nextFire = -1.0f;  // game time value, tracking when player/ship can fire next laser
@@ -21,13 +25,16 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        instance = this;
         anim = GetComponent<Animator>();
     }
 
     void Start()
     {
+        _lives = 3;
+        isGameOver = false;
         transform.position = new Vector3(0, -5, 0); // offical game (0, -3.5f, 0);
-
+        UI.instance.DisplayLives(_lives);
         UI.instance.DisplayShipWrapStatus();
     }
 
@@ -96,6 +103,23 @@ public class Player : MonoBehaviour
     {
         anim.SetBool("fire", false);
         FireLaser();
+    }
+
+    public void Damage()
+    {
+        _lives--;
+        if (_lives == 0)
+        {
+            PlayerDeath();
+        }
+        UI.instance.DisplayLives(_lives);
+    }
+
+    void PlayerDeath()
+    {
+        isGameOver = true;
+        UI.instance.GameOver(isGameOver);
+        Destroy(this.gameObject, 1f);
     }
 }
 

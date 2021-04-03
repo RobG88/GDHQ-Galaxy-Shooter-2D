@@ -8,15 +8,22 @@ public class UI : MonoBehaviour
     public static UI instance;
 
     [SerializeField] Text _shipWrap;
-
+    [SerializeField] Text _livesText;
+    [SerializeField] Text _gameOverText;
     [SerializeField] float BlinkTime;
+
     string textToBlink;
 
     bool CheatKeyEnabled;
 
-    private void Awake()
+    void Awake()
     {
         instance = this;
+    }
+
+    public void DisplayLives(int _lives)
+    {
+        _livesText.text = _lives.ToString();
     }
 
     public void DisplayShipWrapStatus()
@@ -50,5 +57,10 @@ public class UI : MonoBehaviour
     public void SetCheatKey(bool status)
     {
         CheatKeyEnabled = status;
+    }
+
+    public void GameOver(bool isGameOVer)
+    {
+        _gameOverText.gameObject.SetActive(isGameOVer);
     }
 }
