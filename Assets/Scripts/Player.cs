@@ -7,6 +7,8 @@ public class Player : MonoBehaviour
     public static Player instance;
 
     [SerializeField] int _lives = 3;
+
+
     bool isGameOver = false;
     [SerializeField] float _speed = 8f;
     [SerializeField] float _fireRate = 0.15f;  // delay (in Seconds) how quickly the laser will fire
@@ -33,7 +35,7 @@ public class Player : MonoBehaviour
     {
         _lives = 3;
         isGameOver = false;
-        transform.position = new Vector3(0, -5, 0); // offical game (0, -3.5f, 0);
+        transform.position = new Vector3(0.25f, -5, 0); // offical game (0, -3.5f, 0);
         UI.instance.DisplayLives(_lives);
         UI.instance.DisplayShipWrapStatus();
     }

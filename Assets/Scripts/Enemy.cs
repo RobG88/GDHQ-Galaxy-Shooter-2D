@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] int _scoreValue = 0;
+    //[SerializeField] int _scoreValue = 0;
     [SerializeField] float _enemySpeed = 4.0f;
-    [SerializeField] float _enemyLaser = 6.0f;  // speed of enemy's laser
-    [SerializeField] GameObject _enemyLaserPrefab;
+    //[SerializeField] float _enemyLaser = 6.0f;  // speed of enemy's laser
+    //[SerializeField] GameObject _enemyLaserPrefab;
 
     [SerializeField] GameObject _enemyInvaderExplosion;
     [SerializeField] GameObject _enemyChild;
 
-    float _fireRate = 3.0f;
-    float _canFire = -1.0f;
+    //float _fireRate = 3.0f;
+    //float _canFire = -1.0f;
     bool _isDestroyed = false; // if enemy is hit by player/ship Laser then isDestroyed = true, enemy is put back into pool
 
     float _enemyReSpawnThreshold = -6.0f; // Game Screen threshold, once enemy is beyond this point and has been destroyed it will respawn 
@@ -54,7 +54,7 @@ public class Enemy : MonoBehaviour
         transform.position = _enemyPos;
     }
 
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Laser")
         {
@@ -66,8 +66,7 @@ public class Enemy : MonoBehaviour
 
         if (other.tag == "Player")
         {
-            // DAMAGE PLAYER
-            // Null Check
+            Debug.Log("Collision with: " + other.tag);
             Player player = other.transform.GetComponent<Player>();
             if (player != null)
             {
