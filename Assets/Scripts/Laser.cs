@@ -24,7 +24,6 @@ public class Laser : MonoBehaviour
 
         if (transform.position.y > _yThreshold)
             Destroy(transform.gameObject);
-
     }
 
     void OnTriggerEnter2D(Collider2D other)

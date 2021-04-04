@@ -27,7 +27,6 @@ public class Enemy : MonoBehaviour
         //Spawn();
     }
 
-    // Update is called once per frame
     void Update()
     {
         CalculateMovement();
@@ -61,7 +60,8 @@ public class Enemy : MonoBehaviour
         {
             Instantiate(_enemyInvaderExplosion, transform.position, Quaternion.identity);
             _enemyChild.SetActive(false);
-            Destroy(this.gameObject, 2f);
+            Destroy(other.gameObject);
+            Destroy(this.gameObject);
         }
 
         if (other.tag == "Player")
@@ -73,13 +73,9 @@ public class Enemy : MonoBehaviour
             {
                 player.Damage();
             }
-            //other.transform.GetComponent<Player>().Damage();
-
-            //Player.instance.Damage();
-
             Instantiate(_enemyInvaderExplosion, transform.position, Quaternion.identity);
             _enemyChild.SetActive(false);
-            Destroy(this.gameObject, 2f);
+            Destroy(this.gameObject);
         }
     }
 }

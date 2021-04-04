@@ -119,8 +119,6 @@ public class Player : MonoBehaviour
     {
         isGameOver = true;
         UI.instance.GameOver(isGameOver);
-        Destroy(this.gameObject, 1f);
+        Destroy(this.gameObject, 0.25f);
     }
 }
-
-
