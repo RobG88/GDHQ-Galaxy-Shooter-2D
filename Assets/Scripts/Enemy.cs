@@ -67,11 +67,13 @@ public class Enemy : MonoBehaviour
         if (other.tag == "Player")
         {
             Debug.Log("Collision with: " + other.tag);
+            /*
             Player player = other.transform.GetComponent<Player>();
             if (player != null)
             {
                 player.Damage();
             }
+            */
             Instantiate(_enemyInvaderExplosion, transform.position, Quaternion.identity);
             _enemyChild.SetActive(false);
             Destroy(this.gameObject);

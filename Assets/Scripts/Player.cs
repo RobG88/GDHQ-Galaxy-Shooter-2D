@@ -123,4 +123,13 @@ public class Player : MonoBehaviour
         UI.instance.GameOver(isGameOver);
         Destroy(this.gameObject, 0.25f);
     }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Enemy")
+        {
+            Debug.Log("Collision with: " + other.tag);
+            Damage();
+        }
+    }
 }
