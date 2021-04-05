@@ -11,6 +11,8 @@ public class UI : MonoBehaviour
     [SerializeField] Text _livesText;
     [SerializeField] Text _gameOverText;
     [SerializeField] float BlinkTime;
+    [SerializeField] Text _enemiesText;
+    [SerializeField] Text _levelText;
 
     string textToBlink;
 
@@ -24,6 +26,16 @@ public class UI : MonoBehaviour
     public void DisplayLives(int _lives)
     {
         _livesText.text = _lives.ToString();
+    }
+
+    public void DisplayEnemies(int _remainingEnemies, int _totalEnemies)
+    {
+        _enemiesText.text = _remainingEnemies.ToString()+"/"+_totalEnemies.ToString();
+    }
+
+    public void DisplayLevel(int _level)
+    {
+        _livesText.text = _level.ToString();
     }
 
     public void DisplayShipWrapStatus()

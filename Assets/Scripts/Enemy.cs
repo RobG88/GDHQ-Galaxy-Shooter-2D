@@ -24,7 +24,7 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
-        //Spawn();
+        Spawn();
     }
 
     void Update()
@@ -66,7 +66,7 @@ public class Enemy : MonoBehaviour
 
         if (other.tag == "Player")
         {
-            Debug.Log("Collision with: " + other.tag);
+            //Debug.Log("Collision with: " + other.tag);
             /*
             Player player = other.transform.GetComponent<Player>();
             if (player != null)

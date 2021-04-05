@@ -8,7 +8,6 @@ public class Player : MonoBehaviour
 
     [SerializeField] int _lives = 3;
 
-
     bool isGameOver = false;
     [SerializeField] float _speed = 8f;
     [SerializeField] float _fireRate = 0.15f;  // delay (in Seconds) how quickly the laser will fire
@@ -107,7 +106,7 @@ public class Player : MonoBehaviour
         FireLaser();
     }
 
-    public void Damage()
+    void Damage()
     {
         _lives--;
         if (_lives == 0)
@@ -121,6 +120,7 @@ public class Player : MonoBehaviour
     {
         isGameOver = true;
         UI.instance.GameOver(isGameOver);
+        SpawnManager.instance.OnPlayerDeath();
         Destroy(this.gameObject, 0.25f);
     }
 
@@ -128,7 +128,6 @@ public class Player : MonoBehaviour
     {
         if (other.tag == "Enemy")
         {
-            Debug.Log("Collision with: " + other.tag);
             Damage();
         }
     }
