@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject _laserPrefab;
     [SerializeField] Transform _gunLeft, _gunRight;
     [SerializeField] Vector3 _laserOffset = new Vector3(0, 1.20f, 0); // distance offset when spawning laser Y-direction
+    [SerializeField] Vector3 _cannonOffset; // in the event that two lasers strike the same collider, then give one cannon a slightly elevated offset.
     Animator anim;
 
     bool _wrapShip = false; // Q = toggle wrap
@@ -23,6 +24,11 @@ public class Player : MonoBehaviour
     float _xScreenClampLeft = -10.75f;
     float _yScreenClampUpper = 0;
     float _yScreenClampLower = -5.2f; // offical game = -3.8f;
+
+    // CHEAT KEYS
+    //
+    // G = GOD mode
+    bool _cheat_GODMODE = false;
 
     private void Awake()
     {
@@ -35,6 +41,7 @@ public class Player : MonoBehaviour
         _lives = 3;
         isGameOver = false;
         transform.position = new Vector3(0.25f, -5, 0); // offical game (0, -3.5f, 0);
+        //transform.position = new Vector3(0.3834784f, -5, 0); // exactly fire two lasers into one enemy
         UI.instance.DisplayLives(_lives);
         UI.instance.DisplayShipWrapStatus();
     }
@@ -53,8 +60,10 @@ public class Player : MonoBehaviour
         // Q = Enable ship wrapping left/right
         // Below is for testing purposes only
         //
+        // G = Enable GOD mode
+        //
         if (Input.GetKeyDown(KeyCode.Q)) { _wrapShip = !_wrapShip; UI.instance.SetCheatKey(_wrapShip); UI.instance.DisplayShipWrapStatus(); }
-
+        if (Input.GetKeyDown(KeyCode.G)) { _cheat_GODMODE = !_cheat_GODMODE; }
         CalculateMovement();
     }
 
@@ -93,7 +102,6 @@ public class Player : MonoBehaviour
     void FireLaser()
     {
         _nextFire = Time.time + _fireRate; // delay (in Seconds) how quickly the laser will fire
-
         GameObject laser1 = Instantiate(_laserPrefab, _gunLeft.position, Quaternion.identity);
         //laser1.transform.parent = transform;
         GameObject laser2 = Instantiate(_laserPrefab, _gunRight.position, Quaternion.identity);
@@ -108,6 +116,8 @@ public class Player : MonoBehaviour
 
     void Damage()
     {
+        if (_cheat_GODMODE) return;
+
         _lives--;
         if (_lives == 0)
         {
@@ -121,6 +131,7 @@ public class Player : MonoBehaviour
         isGameOver = true;
         UI.instance.GameOver(isGameOver);
         SpawnManager.instance.OnPlayerDeath();
+        WaveSpawner.instance.OnPlayerDeath();
         Destroy(this.gameObject, 0.25f);
     }
 

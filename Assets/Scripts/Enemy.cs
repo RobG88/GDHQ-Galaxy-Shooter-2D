@@ -12,6 +12,8 @@ public class Enemy : MonoBehaviour
     [SerializeField] GameObject _enemyInvaderExplosion;
     [SerializeField] GameObject _enemyChild;
 
+    BoxCollider enemyCollider;
+
     //float _fireRate = 3.0f;
     //float _canFire = -1.0f;
     bool _isDestroyed = false; // if enemy is hit by player/ship Laser then isDestroyed = true, enemy is put back into pool
@@ -21,6 +23,11 @@ public class Enemy : MonoBehaviour
 
     float _respawnXmin = -9.0f;
     float _respawnXmax = 9.0f;
+
+    void Awake()
+    {
+        enemyCollider = GetComponent<BoxCollider>();
+    }
 
     void Start()
     {
@@ -50,30 +57,18 @@ public class Enemy : MonoBehaviour
     {
         float respawnX = Random.Range(_respawnXmin, _respawnXmax);
         _enemyPos.x = respawnX;
+        //_enemyPos.x = 0; // testing, line enemy for two lasers intersecting collider
         _enemyPos.y = Random.Range(7, 12);
         transform.position = _enemyPos;
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Laser")
+        if (other.tag == "Laser" || other.tag == "Player")
         {
-            Instantiate(_enemyInvaderExplosion, transform.position, Quaternion.identity);
-            _enemyChild.SetActive(false);
-            Destroy(other.gameObject);
-            Destroy(this.gameObject);
-        }
-
-        if (other.tag == "Player")
-        {
-            //Debug.Log("Collision with: " + other.tag);
-            /*
-            Player player = other.transform.GetComponent<Player>();
-            if (player != null)
-            {
-                player.Damage();
-            }
-            */
+            enemyCollider.enabled = false; // disable collider so two lasers can not collider at the same time
+            
+            WaveSpawner.instance.EnemyDeath();
             Instantiate(_enemyInvaderExplosion, transform.position, Quaternion.identity);
             _enemyChild.SetActive(false);
             Destroy(this.gameObject);

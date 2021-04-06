@@ -26,7 +26,7 @@ public class Laser : MonoBehaviour
             Destroy(transform.gameObject);
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Enemy" || other.tag == "Asteroid")
         {

@@ -13,6 +13,9 @@ public class UI : MonoBehaviour
     [SerializeField] float BlinkTime;
     [SerializeField] Text _enemiesText;
     [SerializeField] Text _levelText;
+    [SerializeField] Text _waveName;
+    [SerializeField] Text _waveIncomingText;
+    [SerializeField] Text _waveIncomingSecondsText;
 
     string textToBlink;
 
@@ -30,12 +33,12 @@ public class UI : MonoBehaviour
 
     public void DisplayEnemies(int _remainingEnemies, int _totalEnemies)
     {
-        _enemiesText.text = _remainingEnemies.ToString()+"/"+_totalEnemies.ToString();
+        _enemiesText.text = _remainingEnemies.ToString() + "/" + _totalEnemies.ToString();
     }
 
     public void DisplayLevel(int _level)
     {
-        _livesText.text = _level.ToString();
+        _levelText.text = _level.ToString();
     }
 
     public void DisplayShipWrapStatus()
@@ -74,5 +77,20 @@ public class UI : MonoBehaviour
     public void GameOver(bool isGameOVer)
     {
         _gameOverText.gameObject.SetActive(isGameOVer);
+    }
+
+    public void WaveCountdown(int Timer)
+    {
+        Timer++;
+        _waveIncomingSecondsText.text = Timer.ToString();
+    }
+
+    public void WaveCountdownEnableUI(bool isEnabled, int countdownTime, string waveName)
+    {
+        _waveName.text = waveName;
+        _waveName.gameObject.SetActive(isEnabled);
+        _waveIncomingText.gameObject.SetActive(isEnabled);
+        _waveIncomingSecondsText.gameObject.SetActive(isEnabled);
+        _waveIncomingSecondsText.text = countdownTime.ToString();
     }
 }

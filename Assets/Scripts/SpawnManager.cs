@@ -23,7 +23,7 @@ public class SpawnManager : MonoBehaviour
 
     private void Start()
     {
-        Spawn();
+        //Spawn();
     }
     public void Spawn()
     {

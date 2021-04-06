@@ -14,17 +14,26 @@ public class WaveSpawner : MonoBehaviour
         public float delayBetweenEnemySpawns; // seconds between enemy spawning
     }
 
+    public static WaveSpawner instance;
     public enum SpawnState { SPAWNING, WAITING, COUNTING }
     [SerializeField] SpawnState _spawnState = SpawnState.COUNTING;
 
     public Wave[] waves;
 
     int _nextWave = 0; // current wave number
+    int _currentEnemies; // track # of spawned enemies in wave
 
     [SerializeField] float _timeBetweenWaves = 15.0f;
     [SerializeField] float _waveCountdown;
+    [SerializeField] GameObject _enemyContainer;
 
-    float _searchForEnemyCountdown = 1f;  // how ofter to search for remaining enemies in the scene
+    bool _playerIsAlive = true;  // as long as playerIsAlive keep spawning current wave
+    bool _beginCountdown = true;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     void Start()
     {
@@ -35,28 +44,38 @@ public class WaveSpawner : MonoBehaviour
     {
         if (_spawnState == SpawnState.WAITING)
         {
-            // check if any enemies remain in scene
-            if (!EnemyIsAlive())
+            if (_currentEnemies == 0)
             {
                 WaveCompleted();
             }
             else
-            {
-                return; // Wait for player to destroy all enemies
-            }
+                return;
         }
 
         if (_waveCountdown <= 0)
         {
             if (_spawnState != SpawnState.SPAWNING)
             {
+                UI.instance.WaveCountdownEnableUI(_beginCountdown, (int)_waveCountdown, waves[_nextWave].name);
                 // Begin spawning the wave
                 StartCoroutine(SpawnWave(waves[_nextWave]));
             }
         }
         else
         {
-            // Countdown 
+            // Countdown
+            if (_beginCountdown)
+            {
+                UI.instance.DisplayLevel(_nextWave + 1);
+                UI.instance.WaveCountdownEnableUI(_beginCountdown, (int)_waveCountdown, waves[_nextWave].name);
+                _beginCountdown = false;
+            }
+
+            if (_waveCountdown > 0)
+            {
+                UI.instance.WaveCountdown((int)_waveCountdown);
+            }
+
             _waveCountdown -= Time.deltaTime;
         }
     }
@@ -72,6 +91,8 @@ public class WaveSpawner : MonoBehaviour
 
         _spawnState = SpawnState.COUNTING;
         _waveCountdown = _timeBetweenWaves;
+        _currentEnemies = 0;
+        _beginCountdown = true;
 
         if (_nextWave + 1 > waves.Length - 1)
         {
@@ -94,40 +115,20 @@ public class WaveSpawner : MonoBehaviour
         return;
     }
 
-    bool EnemyIsAlive()
-    {
-        // Instead of looking for Enemies, use the enemyCount in Wave
-        // and update with each enemy destoryed, when 0 return true
-
-        _searchForEnemyCountdown -= Time.deltaTime;
-
-        if (_searchForEnemyCountdown <= 0f)
-        {
-            _searchForEnemyCountdown = 1f; // reset timer
-
-            if (GameObject.FindGameObjectWithTag("Enemy") == null)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     IEnumerator SpawnWave(Wave _wave)
     {
-        Debug.Log("Spawning Wave: " + _wave.name);
-        Debug.Log("Wave Enemy Count: " + _wave.enemyCount);
-
         _spawnState = SpawnState.SPAWNING;
 
         // Spawn enemies
         for (int i = 0; i < _wave.enemyCount; i++)
         {
+            _currentEnemies++;
             SpawnEnemy(_wave.enemyPrefab);
-            // Wait for next enemy in wave to spawn
+            UI.instance.DisplayEnemies(_currentEnemies, _wave.enemyCount);
             // yield return new WaitForSeconds(1f / _wave.spawnRate);
             yield return new WaitForSeconds(_wave.delayBetweenEnemySpawns);
+
+            if (!_playerIsAlive) { yield break; }
         }
 
         _spawnState = SpawnState.WAITING;
@@ -139,5 +140,17 @@ public class WaveSpawner : MonoBehaviour
     {
         Debug.Log("Spawning Enemy: " + _enemyPrefab.name);
         GameObject newEnemy = Instantiate(_enemyPrefab, new Vector3(0, 10, 0), Quaternion.identity);
+        newEnemy.transform.parent = _enemyContainer.transform;
+    }
+
+    public void EnemyDeath()
+    {
+        _currentEnemies--;
+        UI.instance.DisplayEnemies(_currentEnemies, waves[_nextWave].enemyCount);
+    }
+
+    public void OnPlayerDeath()
+    {
+        _playerIsAlive = false;
     }
 }
