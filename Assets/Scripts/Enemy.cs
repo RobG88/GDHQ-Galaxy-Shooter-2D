@@ -67,11 +67,14 @@ public class Enemy : MonoBehaviour
         if (other.tag == "Laser" || other.tag == "Player")
         {
             enemyCollider.enabled = false; // disable collider so two lasers can not collider at the same time
-            
-            WaveSpawner.instance.EnemyDeath();
             Instantiate(_enemyInvaderExplosion, transform.position, Quaternion.identity);
             _enemyChild.SetActive(false);
             Destroy(this.gameObject);
         }
+    }
+
+    void OnDestroy()
+    {
+        WaveSpawner.instance.EnemyDeath();
     }
 }
